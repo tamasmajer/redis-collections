@@ -1,0 +1,30 @@
+{
+  "name": "redis-collections",
+  "version": "0.0.0",
+  "description": "Collection based views for Redis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamasmajer/redis-collections.git"
+  },
+  "keywords": [
+    "redis",
+    "node_redis",
+    "object",
+    "collection",
+    "datastore",
+    "mapping",
+    "simple",
+    "abstraction",
+    "layer"
+  ],
+  "author": "Tamas Majer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tamasmajer/redis-collections/issues"
+  },
+  "homepage": "https://github.com/tamasmajer/redis-collections#readme"
+}
