@@ -2,7 +2,7 @@
   "name": "redis-collections",
   "version": "0.0.1",
   "description": "Collection based views for Redis",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --harmony-async-await \"test/**/*.spec.js\""
   },
