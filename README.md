@@ -3,14 +3,14 @@
 Collection based views for Redis inspired by clean code.
 
 
-### Why
+## Why
 1. Structured database.
 1. Collections instead of commands.
 1. Working with IDs instead of keys.
 1. Composite queries.
 1. Promise based.
 
-### Structure
+## Structure
  You can quickly define your whole database (or cover your existing one) using simple collections:
 
 ```javascript 1.7
@@ -21,7 +21,7 @@ const users = {
 }
 ```
 
-### Composite queries
+## Composite queries
 
 You can structure your query into the expected output format and run them in one step.
 ```javascript 1.7
@@ -34,7 +34,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 ```
 
 
-### Collections
+## Collections
 
 
 * [RedisSet](lib/collection/RedisSet) - for [Sets](https://redis.io/topics/data-types#sets) with a fix key (like "users") 
@@ -51,7 +51,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 
 
 
-### Simple example
+## Simple example
 [simple-example.js](examples/simple-example.js): (you can try this in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
 ```javascript 1.7
 // const redis = require('redis')
@@ -75,7 +75,7 @@ Should print
 list= [ 'one', 'two' ]
 ```
 
-### Better example
+## Better example
 
 [better-example.js](examples/better-example.js): (you can try [this version](examples/better-example-node6.js) in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
 ```javascript 1.8
@@ -165,13 +165,13 @@ By using the mock implementation you can [check](examples/better-example-mock.js
 }
 ```
 
-### Install
+## Install
 
 ```bash
 npm install redis-collections
 ```
 
-### Testing
+## Testing
 
 [Testing](test/basic.spec.js) needs node 7.2.1
 
@@ -179,9 +179,9 @@ npm install redis-collections
 npm test
 ```
 
-### Status
+## Status
 
 Needs more tests.
 
-### License
+## License
 [MIT](https://github.com/NodeRedis/node_redis/blob/master/LICENSE)
