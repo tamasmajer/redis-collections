@@ -47,17 +47,17 @@ simple-example.js:
 ```javascript 1.7
 // const redis = require('redis')
 const redis = require('fakeredis')
-const {Store, RedisSet} = require("redis-collections")
+const {Store, RedisSet} = require("../lib")
 
-async function test() {
-    const store = new Store(redis.createClient())
-    const numbers = new RedisSet('numbers')
-    await store.promise(numbers.add('two'))
-    await store.promise(numbers.add('one'))
-    const list = await store.promise(numbers.getList())
-    console.log("list=", list)
-}
-test()
+const store = new Store(redis.createClient())
+const numbers = new RedisSet('numbers')
+
+store.promise(numbers.add('two'))
+    .then(() => store.promise(numbers.add('one')))
+    .then(() => store.promise(numbers.getList()))
+    .then(list => {
+        console.log("list=", list)
+    })
 ```
 
 Run with node 7.2.1
