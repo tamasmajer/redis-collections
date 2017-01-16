@@ -4,7 +4,7 @@
   "description": "Collection based views for Redis",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/mocha/bin/mocha --harmony-async-await \"test/**/*.spec.js\""
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/tamasmajer/redis-collections/issues"
   },
-  "homepage": "https://github.com/tamasmajer/redis-collections#readme"
+  "homepage": "https://github.com/tamasmajer/redis-collections#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "fakeredis": "^1.0.3",
+    "mocha": "^3.2.0"
+  }
 }
