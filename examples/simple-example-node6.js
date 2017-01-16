@@ -1,6 +1,7 @@
 // const redis = require('redis')
 const redis = require('fakeredis')
-const {Store, RedisSet} = require("../lib")
+// const {Store, RedisSet} = require("redis-collections")
+const {Store, RedisSet} = require("..")
 
 const store = new Store(redis.createClient())
 const numbers = new RedisSet('numbers')

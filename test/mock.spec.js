@@ -5,7 +5,7 @@ const expect = chai.expect
 
 const redis = require('fakeredis')
 
-const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = require("../lib/mock")
+const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = require("..").Mock
 
 
 describe('mock:', () => {
@@ -109,8 +109,8 @@ describe('mock:', () => {
             expect(result).to.deep.equal({
                 hasOne: 1,
                 hasThree: 0,
-                allInAList: [ 'one', 'two' ],
-                createAListHere: [ 1, 1, { hasOne: 1, description: 'hello' } ]
+                allInAList: ['one', 'two'],
+                createAListHere: [1, 1, {hasOne: 1, description: 'hello'}]
             })
         })
 
@@ -124,7 +124,7 @@ describe('mock:', () => {
             friends: new RedisIdToSet('user:${userId}:friends')
         }
 
-        before(async()=>{
+        before(async() => {
             const createUsers = [
                 users.list.addAll(["U1", "U2"]),
                 users.settings.setAll("U1", {name: "USER1"}),
@@ -161,7 +161,7 @@ describe('mock:', () => {
             const userIds = await store.promise(users.list.getList())
             const loadMap = {}
             userIds.forEach(userId => {
-                loadMap[userId]={
+                loadMap[userId] = {
                     settings: users.settings.getMap(userId),
                     friends: users.friends.getList(userId)
                 }
@@ -170,12 +170,12 @@ describe('mock:', () => {
 
             expect(userMap).to.deep.equal({
                 "U1": {
-                    settings: { name: 'USER1' },
-                    friends: [ 'U2' ]
+                    settings: {name: 'USER1'},
+                    friends: ['U2']
                 },
                 "U2": {
-                    settings: { name: 'USER2' },
-                    friends: [ 'U1' ]
+                    settings: {name: 'USER2'},
+                    friends: ['U1']
                 }
             })
         })

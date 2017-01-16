@@ -1,14 +1,18 @@
 # redis-collections
 
-Collection based views for Redis.
+Collection based views for Redis inspired by clean code.
 
-* [Overview](#overview)
-* [Collections](#collections)
-* [Examples](#examples)
 
-# Overview
+### Why
+1. Structured database.
+1. Collections instead of commands.
+1. Working with IDs instead of keys.
+1. Composite queries.
+1. Promise based.
 
-This is an extra layer on top of [node_redis](https://www.npmjs.com/package/redis) simplifying it with simple collection views. You can sum up your whole database, or parts of it, into a simple schema like this:
+### Structure
+ You can quickly define your whole database (or cover your existing one) using simple collections:
+
 ```javascript 1.7
 const users = {
     list: new RedisSet('users'),
@@ -16,7 +20,10 @@ const users = {
     friends: new RedisIdToSet('user:${userId}:friends')
 }
 ```
-And run a batch query like this one:
+
+### Composite queries
+
+You can structure your query into the expected output format and run them in one step.
 ```javascript 1.7
 const loadAllUserInfo = userIds.map(userId => ({
     id: userId,
@@ -26,28 +33,30 @@ const loadAllUserInfo = userIds.map(userId => ({
 const userInfoList = await store.promise(loadAllUserInfo)
 ```
 
-The methods of the collections are only producing redis commands. These commands are then executed at once by the multi command of node_redis wrapped into a promise. You don't need async/await support to use this package (only to run the tests), but it's looks much better with it.
 
-# Collections
-
-* [RedisSet](lib/RedisSet) - for [Sets](https://redis.io/topics/data-types#sets) with a fix key (like "users")
-* [RedisMap](lib/RedisMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with a fix key (like "settings")
-* [RedisSortedSet](lib/RedisSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with a fix key (like "users-by-name")
-* [RedisIdToValue](lib/RedisIdToValue) - for [String values](https://redis.io/topics/data-types-intro#redis-strings) with an ID in the key (like "user:${userId}:name")
-* [RedisIdToSet](lib/RedisIdToSet) - for [Sets](https://redis.io/topics/data-types#sets) with an ID in the key (like "user:${userId}:friends") 
-* [RedisIdToMap](lib/RedisIdToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with an ID in the key (like "user:${userId}:settings")
-* [RedisIdToSortedSet](lib/RedisIdToSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with an ID in the key (like "user:${userId}:friends-by-distance")
-* [RedisIdPairToMap](lib/RedisIdPairToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with two IDs in the key (like "user:${userId}:friend:${userId}:relationship-details")
+### Collections
 
 
-# Examples
+* [RedisSet](lib/collection/RedisSet) - for [Sets](https://redis.io/topics/data-types#sets) with a fix key (like "users") 
+* [RedisMap](lib/collection/RedisMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with a fix key (like "settings")
+* [RedisSortedSet](lib/collection/RedisSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with a fix key (like "users-by-name")
+* [RedisIdToValue](lib/collection/RedisIdToValue) - for [String values](https://redis.io/topics/data-types-intro#redis-strings) with an ID in the key (like "user:${userId}:name")
+* [RedisIdToSet](lib/collection/RedisIdToSet) - for [Sets](https://redis.io/topics/data-types#sets) with an ID in the key (like "user:${userId}:friends") 
+* [RedisIdToMap](lib/collection/RedisIdToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with an ID in the key (like "user:${userId}:settings")
+* [RedisIdToSortedSet](lib/collection/RedisIdToSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with an ID in the key (like "user:${userId}:friends-by-distance")
+* [RedisIdPairToMap](lib/collection/RedisIdPairToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with two IDs in the key (like "user:${userId}:friend:${userId}:relationship-details")
 
-## Single collection
-simple-example.js:
+
+
+
+
+
+### Simple example
+[simple-example.js](examples/simple-example.js): (you can try this in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
 ```javascript 1.7
 // const redis = require('redis')
 const redis = require('fakeredis')
-const {Store, RedisSet} = require("../lib")
+const {Store, RedisSet} = require("redis-collections")
 
 const store = new Store(redis.createClient())
 const numbers = new RedisSet('numbers')
@@ -60,19 +69,15 @@ store.promise(numbers.add('two'))
     })
 ```
 
-Run with node 7.2.1
-```bash
-node --harmony-async-await simple-example.js
-```
 
 Should print
 ```bash
 list= [ 'one', 'two' ]
 ```
 
-## Multiple collections
+### Better example
 
-see multi-example.js:
+[better-example.js](examples/better-example.js): (you can try [this version](examples/better-example-node6.js) in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
 ```javascript 1.8
 const store = new Store(redis.createClient())
 const users = {
@@ -138,7 +143,7 @@ userList = [
 ]
 ```
 
-By using the mock implementation you can check the contents of the db:
+By using the mock implementation you can [check](examples/better-example-mock.js) the contents of the db: (you can try [this version](examples/better-example-mock-node6.js) in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
 ```javascript 1.7
 {
     "users": [
@@ -160,10 +165,23 @@ By using the mock implementation you can check the contents of the db:
 }
 ```
 
-# Testing
+### Install
 
-Testing needs node v7.2.1
+```bash
+npm install redis-collections
+```
+
+### Testing
+
+[Testing](test/basic.spec.js) needs node 7.2.1
 
 ```bash
 npm test
 ```
+
+### Status
+
+Needs more tests.
+
+### License
+[MIT](https://github.com/NodeRedis/node_redis/blob/master/LICENSE)

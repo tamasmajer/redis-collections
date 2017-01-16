@@ -1,6 +1,7 @@
 // const redis = require('redis')
 const redis = require('fakeredis')
-const {Store, RedisSet, RedisIdToSet, RedisIdToMap} = require("../lib/mock")
+// const {Store, RedisSet, RedisIdToSet, RedisIdToMap} = require("redis-collections").Mock
+const {Store, RedisSet, RedisIdToSet, RedisIdToMap} = require("..").Mock
 
 async function test() {
     const store = new Store(redis.createClient())
@@ -28,10 +29,10 @@ async function test() {
     }))
     const userList = await store.promise(loadList)
 
-    console.log("createUsers=", createUsers)
-    console.log("userIds=", userIds)
-    console.log("loadList=", loadList)
-    console.log("userList=", userList)
-    console.log("data=", JSON.stringify(data,null,4))
+    console.log("createUsers =", createUsers)
+    console.log("userIds =", userIds)
+    console.log("loadList =", loadList)
+    console.log("userList =", userList)
+    console.log("data =", JSON.stringify(data, null, 4))
 }
 test()
