@@ -3,12 +3,13 @@
 Collection based views for Redis inspired by clean code.
 
 
-## Why
-1. Structured database.
-1. Collections instead of commands.
-1. Working with IDs instead of keys.
-1. Composite queries.
-1. Promise based.
+## Goals
+- Structure the database.
+- Use collections instead of commands.
+- Work with IDs instead of keys.
+- Composite queries.
+- Promises.
+- Clean code.
 
 ## Structure
  You can quickly define your whole database (or cover your existing one) using simple collections:
