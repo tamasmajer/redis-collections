@@ -1,6 +1,6 @@
 # redis-collections
 
-Collection based views for Redis inspired by clean code.
+Collection based views for Redis. Inspired by clean code principles.
 
 
 ## Goals
@@ -11,8 +11,8 @@ Collection based views for Redis inspired by clean code.
 - Promises.
 - Clean code.
 
-## Structure
- You can quickly define your whole database (or cover your existing one) using simple collections:
+## Structured database
+Split your database into smaller sections, and describe them with collections. For example group the user related collections together like this: 
 
 ```javascript
 const users = {
@@ -24,7 +24,7 @@ const users = {
 
 ## Composite queries
 
-You can structure your query into the expected output format and run them in one step.
+Instead of loading data separately and then mapping them together, you can just tie your queries together into a single self-documenting structure. 
 ```javascript
 const loadAllUserInfo = userIds.map(userId => ({
     id: userId,
@@ -35,7 +35,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 ```
 
 
-## Collections
+## Collections (for now)
 
 
 * [RedisSet](lib/collection/RedisSet.js) manages [redis sets](https://redis.io/topics/data-types#sets) with a fixed key (like "users") 
@@ -51,7 +51,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 
 
 
-## Simple example
+## Example (single set)
 [simple-example.js](examples/simple-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--simple-example))
 ```javascript
 // const redis = require('redis')
@@ -75,7 +75,7 @@ Should print
 list= [ 'one', 'two' ]
 ```
 
-## Better example
+## Example (users)
 
 [better-example.js](examples/better-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example))
 ```javascript
@@ -104,7 +104,7 @@ const loadList = userIds.map(userId => ({
 const userList = await store.promise(loadList)
 ```
 
-will create:
+Output:
 ```javascript
 createUsers = [ 
     [ 'redis', 'sadd', 'users', 'U1', 'U2' ],
@@ -143,7 +143,7 @@ userList = [
 ]
 ```
 
-By using the mock implementation you can [check](examples/better-example-mock.js) the contents of the db: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
+There is a mock implementation to the collections so you can [check](examples/better-example-mock.js) the contents of the database at any time. In this example the mock database looks like this: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
 ```javascript
 {
     "users": [
@@ -181,7 +181,7 @@ npm test
 
 ## Status
 
-Needs more tests.
+Needs tests, more collections.
 
 ## License
 [MIT](LICENCE)
