@@ -13,7 +13,7 @@ Collection based views for Redis inspired by clean code.
 ## Structure
  You can quickly define your whole database (or cover your existing one) using simple collections:
 
-```javascript 1.7
+```javascript
 const users = {
     list: new RedisSet('users'),
     settings: new RedisIdToMap('user:${userId}:settings'),
