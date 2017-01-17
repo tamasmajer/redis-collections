@@ -37,15 +37,14 @@ const userInfoList = await store.promise(loadAllUserInfo)
 ## Collections
 
 
-* [RedisSet](lib/collection/RedisSet) - for [Sets](https://redis.io/topics/data-types#sets) with a fix key (like "users") 
-* [RedisMap](lib/collection/RedisMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with a fix key (like "settings")
-* [RedisSortedSet](lib/collection/RedisSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with a fix key (like "users-by-name")
-* [RedisIdToValue](lib/collection/RedisIdToValue) - for [String values](https://redis.io/topics/data-types-intro#redis-strings) with an ID in the key (like "user:${userId}:name")
-* [RedisIdToSet](lib/collection/RedisIdToSet) - for [Sets](https://redis.io/topics/data-types#sets) with an ID in the key (like "user:${userId}:friends") 
-* [RedisIdToMap](lib/collection/RedisIdToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with an ID in the key (like "user:${userId}:settings")
-* [RedisIdToSortedSet](lib/collection/RedisIdToSortedSet) - for [Sorted sets](https://redis.io/topics/data-types#sorted-sets) with an ID in the key (like "user:${userId}:friends-by-distance")
-* [RedisIdPairToMap](lib/collection/RedisIdPairToMap) - for [Hash maps](https://redis.io/topics/data-types#hashes) with two IDs in the key (like "user:${userId}:friend:${userId}:relationship-details")
-
+* [RedisSet](lib/collection/RedisSet) manages [redis sets](https://redis.io/topics/data-types#sets) with a fixed key (like "users") 
+* [RedisMap](lib/collection/RedisMap) manages [redis hash maps](https://redis.io/topics/data-types#hashes) with a fixed key (like "settings")
+* [RedisSortedSet](lib/collection/RedisSortedSet) manages [redis sorted sets](https://redis.io/topics/data-types#sorted-sets) with a fixed key (like "users-by-name")
+* [RedisIdToValue](lib/collection/RedisIdToValue) manages [redis string values](https://redis.io/topics/data-types-intro#redis-strings) with an ID in the key (like "user:${userId}:name")
+* [RedisIdToSet](lib/collection/RedisIdToSet) manages [redis sets](https://redis.io/topics/data-types#sets) with an ID in the key (like "user:${userId}:friends") 
+* [RedisIdToMap](lib/collection/RedisIdToMap) manages [redis hash maps](https://redis.io/topics/data-types#hashes) with an ID in the key (like "user:${userId}:settings")
+* [RedisIdToSortedSet](lib/collection/RedisIdToSortedSet) manages [redis sorted sets](https://redis.io/topics/data-types#sorted-sets) with an ID in the key (like "user:${userId}:friends-by-distance")
+* [RedisIdPairToMap](lib/collection/RedisIdPairToMap) manages [redis hash maps](https://redis.io/topics/data-types#hashes) with two IDs in the key (like "user:${userId}:friend:${userId}:relationship-details")
 
 
 
