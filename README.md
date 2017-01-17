@@ -183,4 +183,4 @@ npm test
 Needs more tests.
 
 ## License
-[MIT](https://github.com/NodeRedis/node_redis/blob/master/LICENSE)
+[MIT](LICENCE)
