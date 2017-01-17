@@ -24,7 +24,7 @@ const users = {
 ## Composite queries
 
 You can structure your query into the expected output format and run them in one step.
-```javascript 1.7
+```javascript
 const loadAllUserInfo = userIds.map(userId => ({
     id: userId,
     settings: users.settings.getMap(userId),
@@ -53,7 +53,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 
 ## Simple example
 [simple-example.js](examples/simple-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--simple-example))
-```javascript 1.7
+```javascript
 // const redis = require('redis')
 const redis = require('fakeredis')
 const {Store, RedisSet} = require("redis-collections")
@@ -78,7 +78,7 @@ list= [ 'one', 'two' ]
 ## Better example
 
 [better-example.js](examples/better-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example))
-```javascript 1.8
+```javascript
 const store = new Store(redis.createClient())
 const users = {
     list: new RedisSet('users'),
@@ -105,7 +105,7 @@ const userList = await store.promise(loadList)
 ```
 
 will create:
-```javascript 1.7
+```javascript
 createUsers = [ 
     [ 'redis', 'sadd', 'users', 'U1', 'U2' ],
     [ 'redis', 'hmset', 'user:U1:settings', { name: 'USER1' } ],
@@ -144,7 +144,7 @@ userList = [
 ```
 
 By using the mock implementation you can [check](examples/better-example-mock.js) the contents of the db: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
-```javascript 1.7
+```javascript
 {
     "users": [
         "U1",
