@@ -51,7 +51,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 
 
 
-## Example (single set)
+## Example (single)
 [simple-example.js](examples/simple-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--simple-example))
 ```javascript
 // const redis = require('redis')
@@ -59,23 +59,24 @@ const redis = require('fakeredis')
 const {Store, RedisSet} = require("redis-collections")
 
 const store = new Store(redis.createClient())
+
 const numbers = new RedisSet('numbers')
 
 store.promise(numbers.add('two'))
     .then(() => store.promise(numbers.add('one')))
     .then(() => store.promise(numbers.getList()))
     .then(list => {
-        console.log("list=", list)
+        console.log("list = ", list)
     })
 ```
 
 
-Should print
+Should print:
 ```bash
-list= [ 'one', 'two' ]
+list = [ 'one', 'two' ]
 ```
 
-## Example (users)
+## Example (multiple)
 
 [better-example.js](examples/better-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example))
 ```javascript
@@ -143,7 +144,7 @@ userList = [
 ]
 ```
 
-There is a mock implementation to the collections so you can [check](examples/better-example-mock.js) the contents of the database at any time. In this example the mock database looks like this: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
+There is a mock implementation for the collections so you can [test](examples/better-example-mock.js) the contents of the database any time. The example above created this database: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
 ```javascript
 {
     "users": [
@@ -181,7 +182,7 @@ npm test
 
 ## Status
 
-Needs tests, more collections.
+Needs tests, more collections, use cases, etc.
 
 ## License
 [MIT](LICENCE)
