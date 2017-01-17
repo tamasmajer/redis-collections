@@ -52,7 +52,7 @@ const userInfoList = await store.promise(loadAllUserInfo)
 
 
 ## Simple example
-[simple-example.js](examples/simple-example.js): (you can try this in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
+[simple-example.js](examples/simple-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--simple-example))
 ```javascript 1.7
 // const redis = require('redis')
 const redis = require('fakeredis')
@@ -77,7 +77,7 @@ list= [ 'one', 'two' ]
 
 ## Better example
 
-[better-example.js](examples/better-example.js): (you can try [this version](examples/better-example-node6.js) in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
+[better-example.js](examples/better-example.js): ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example))
 ```javascript 1.8
 const store = new Store(redis.createClient())
 const users = {
@@ -143,7 +143,7 @@ userList = [
 ]
 ```
 
-By using the mock implementation you can [check](examples/better-example-mock.js) the contents of the db: (you can try [this version](examples/better-example-mock-node6.js) in [RunKit](https://runkit.com/npm/redis-collections) using node 6)
+By using the mock implementation you can [check](examples/better-example-mock.js) the contents of the db: ([Online version](https://runkit.com/tamasmajer/redis-collections--better-example-mock))
 ```javascript 1.7
 {
     "users": [
