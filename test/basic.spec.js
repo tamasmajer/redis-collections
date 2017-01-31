@@ -325,6 +325,14 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(sortedSet.removeBelow(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT2])
+
+                await store.promise(sortedSet.clear())
+                await store.promise(sortedSet.put(SCORE1, TEXT1))
+                await store.promise(sortedSet.put(SCORE2, TEXT2))
+                expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.inc(SCORE2, TEXT1))
+                expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT2, TEXT1])
+
             })
 
             it('RedisIdToSortedSet should execute all functions as expected:', async() => {
@@ -365,6 +373,13 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(sortedSet.removeBelow(NUMBERS, SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT2])
+
+                await store.promise(sortedSet.clear(NUMBERS))
+                await store.promise(sortedSet.put(NUMBERS, SCORE1, TEXT1))
+                await store.promise(sortedSet.put(NUMBERS, SCORE2, TEXT2))
+                expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.inc(NUMBERS, SCORE2, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT2, TEXT1])
             })
         })
 
