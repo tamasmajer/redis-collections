@@ -13,7 +13,8 @@ const implementations = [
 implementations.forEach(function ({name, implementation}) {
     const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
 
-    describe(name + ":", () => {
+    describe(name + ":", function () {
+        this.timeout(0)
 
         describe('collections:', () => {
 
@@ -240,6 +241,12 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(idToMap.get(EN_LANG_ID, NUMBERS_TOPIC_ID, EN_FIELD2))).to.equal(EN_VALUE2)
                 expect((await store.promise(idToMap.getMap(EN_LANG_ID, NUMBERS_TOPIC_ID)))).to.deep.equal(EN_MAP)
                 expect((await store.promise(idToMap.getFields(EN_LANG_ID, NUMBERS_TOPIC_ID))).sort()).to.deep.equal(Object.keys(EN_MAP).sort())
+                const keys = await store.promise(idToMap.findKeys(EN_LANG_ID))
+                expect(keys.sort()).to.deep.equal(["translate:" + EN_LANG_ID + ":" + NUMBERS_TOPIC_ID].sort())
+                for (const key of keys) {
+                    const idPair = idToMap.toIds(key)
+                    expect(await store.promise(idToMap.exists(...idPair)))
+                }
 
                 await store.promise(idToMap.clear(EN_LANG_ID, NUMBERS_TOPIC_ID))
                 expect(await store.promise(idToMap.exists(EN_LANG_ID, NUMBERS_TOPIC_ID))).to.not.be.ok
