@@ -31,6 +31,7 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(set.add(VALUE2))
                 await store.promise(set.add(VALUE1))
+                await store.promise(set.add(VALUE1))
                 expect(await store.promise(set.exists())).to.be.ok
                 expect(await store.promise(set.contains(VALUE1))).to.be.ok
                 expect(await store.promise(set.contains(VALUE2))).to.be.ok
@@ -75,6 +76,7 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(idToSet.add(USER1, USER2))
                 await store.promise(idToSet.add(USER1, USER3))
+                await store.promise(idToSet.add(USER2, USER3))
                 await store.promise(idToSet.add(USER2, USER3))
                 expect(await store.promise(idToSet.exists(USER1))).to.be.ok
                 expect(await store.promise(idToSet.exists(USER2))).to.be.ok
