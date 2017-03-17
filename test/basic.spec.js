@@ -330,6 +330,15 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(sortedSet.put(SCORE2, TEXT2))
                 await store.promise(sortedSet.put(SCORE1, TEXT1))
+                await store.promise(sortedSet.removeBottom(2))
+                expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.removeBottom(1))
+                expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT2])
+                await store.promise(sortedSet.removeBottom(0))
+                expect(await store.promise(sortedSet.getList())).to.deep.equal([])
+
+                await store.promise(sortedSet.put(SCORE2, TEXT2))
+                await store.promise(sortedSet.put(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
 
                 await store.promise(sortedSet.removeBelow(SCORE1, TEXT1))
@@ -374,6 +383,15 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT1, TEXT2])
 
                 await store.promise(sortedSet.removeBelow(NUMBERS, SCORE2, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(NUMBERS, SCORE2, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, SCORE1, TEXT1))
+                await store.promise(sortedSet.removeBottom(NUMBERS, 2))
+                expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.removeBottom(NUMBERS, 1))
+                expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT2])
+                await store.promise(sortedSet.removeBottom(NUMBERS, 0))
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([])
 
                 await store.promise(sortedSet.put(NUMBERS, SCORE2, TEXT2))
