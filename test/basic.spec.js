@@ -11,7 +11,7 @@ const implementations = [
 ]
 
 implementations.forEach(function ({name, implementation}) {
-    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue,RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
+    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
 
     describe(name + ":", function () {
         this.timeout(0)
@@ -312,27 +312,27 @@ implementations.forEach(function ({name, implementation}) {
                 const TEXT2 = 'two'
                 const map = new RedisIdPairToValue({key: 'id.to.text:${lang}:${id}', valueType: 'text'})
 
-                expect(await store.promise(map.exists(LANG,ID1))).to.not.be.ok
-                expect(await store.promise(map.get(LANG,ID1))).to.not.be.ok
+                expect(await store.promise(map.exists(LANG, ID1))).to.not.be.ok
+                expect(await store.promise(map.get(LANG, ID1))).to.not.be.ok
 
-                await store.promise(map.set(LANG,ID1, TEXT1))
-                await store.promise(map.set(LANG,ID2, TEXT2))
-                expect(await store.promise(map.exists(LANG,ID1))).to.be.ok
-                expect(await store.promise(map.exists(LANG,ID2))).to.be.ok
-                expect(await store.promise(map.get(LANG,ID1))).to.equal(TEXT1)
-                expect(await store.promise(map.get(LANG,ID2))).to.equal(TEXT2)
+                await store.promise(map.set(LANG, ID1, TEXT1))
+                await store.promise(map.set(LANG, ID2, TEXT2))
+                expect(await store.promise(map.exists(LANG, ID1))).to.be.ok
+                expect(await store.promise(map.exists(LANG, ID2))).to.be.ok
+                expect(await store.promise(map.get(LANG, ID1))).to.equal(TEXT1)
+                expect(await store.promise(map.get(LANG, ID2))).to.equal(TEXT2)
 
-                await store.promise(map.remove(LANG,ID1))
-                expect(await store.promise(map.exists(LANG,ID1))).to.not.be.ok
-                expect(await store.promise(map.exists(LANG,ID2))).to.be.ok
+                await store.promise(map.remove(LANG, ID1))
+                expect(await store.promise(map.exists(LANG, ID1))).to.not.be.ok
+                expect(await store.promise(map.exists(LANG, ID2))).to.be.ok
 
-                await store.promise(map.remove(LANG,ID2))
-                expect(await store.promise(map.exists(LANG,ID2))).to.not.be.ok
+                await store.promise(map.remove(LANG, ID2))
+                expect(await store.promise(map.exists(LANG, ID2))).to.not.be.ok
 
-                await store.promise(map.inc(LANG,'counter'))
-                expect(await store.promise(map.get(LANG,'counter'))).to.equal(1)
-                await store.promise(map.inc(LANG,'counter'))
-                expect(await store.promise(map.get(LANG,'counter'))).to.equal(2)
+                await store.promise(map.inc(LANG, 'counter'))
+                expect(await store.promise(map.get(LANG, 'counter'))).to.equal(1)
+                await store.promise(map.inc(LANG, 'counter'))
+                expect(await store.promise(map.get(LANG, 'counter'))).to.equal(2)
             })
 
             it('RedisSortedSet should execute all functions as expected:', async() => {
@@ -346,16 +346,23 @@ implementations.forEach(function ({name, implementation}) {
 
                 expect(await store.promise(sortedSet.size())).to.equal(0)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(true))).to.deep.equal([])
 
                 await store.promise(sortedSet.put(SCORE2, TEXT2))
                 await store.promise(sortedSet.put(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size())).to.equal(2)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getList(true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTopOne())).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTopOne(true))).to.deep.equal([TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTop(1))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTop(1, true))).to.deep.equal([TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTop(2))).to.deep.equal([TEXT2, TEXT1])
+                expect(await store.promise(sortedSet.getTop(2, true))).to.deep.equal([TEXT2, '2', TEXT1, '1'])
                 expect(await store.promise(sortedSet.getBottom(1))).to.deep.equal([TEXT1])
+                expect(await store.promise(sortedSet.getBottom(1, true))).to.deep.equal([TEXT1, '1'])
                 expect(await store.promise(sortedSet.getBottom(2))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getBottom(2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
 
                 await store.promise(sortedSet.remove(TEXT1))
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT2])
@@ -389,6 +396,7 @@ implementations.forEach(function ({name, implementation}) {
                 await store.promise(sortedSet.inc(SCORE2, TEXT1))
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT2, TEXT1])
 
+
             })
 
             it('RedisIdToSortedSet should execute all functions as expected:', async() => {
@@ -403,16 +411,23 @@ implementations.forEach(function ({name, implementation}) {
 
                 expect(await store.promise(sortedSet.size(NUMBERS))).to.equal(0)
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(NUMBERS, true))).to.deep.equal([])
 
                 await store.promise(sortedSet.put(NUMBERS, SCORE2, TEXT2))
                 await store.promise(sortedSet.put(NUMBERS, SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size(NUMBERS))).to.equal(2)
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getList(NUMBERS, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTopOne(NUMBERS))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTopOne(NUMBERS, true))).to.deep.equal([TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTop(NUMBERS, 1))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, 1, true))).to.deep.equal([TEXT2, '2'])
                 expect(await store.promise(sortedSet.getTop(NUMBERS, 2))).to.deep.equal([TEXT2, TEXT1])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, 2, true))).to.deep.equal([TEXT2, '2', TEXT1, '1'])
                 expect(await store.promise(sortedSet.getBottom(NUMBERS, 1))).to.deep.equal([TEXT1])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, 1, true))).to.deep.equal([TEXT1, '1'])
                 expect(await store.promise(sortedSet.getBottom(NUMBERS, 2))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
 
                 await store.promise(sortedSet.remove(NUMBERS, TEXT1))
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([TEXT2])
