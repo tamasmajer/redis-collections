@@ -11,7 +11,7 @@ const implementations = [
 ]
 
 implementations.forEach(function ({name, implementation}) {
-    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
+    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue,RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
 
     describe(name + ":", function () {
         this.timeout(0)
@@ -295,6 +295,44 @@ implementations.forEach(function ({name, implementation}) {
 
                 await store.promise(map.remove(ID2))
                 expect(await store.promise(map.exists(ID2))).to.not.be.ok
+
+                await store.promise(map.inc('counter'))
+                expect(await store.promise(map.get('counter'))).to.equal(1)
+                await store.promise(map.inc('counter'))
+                expect(await store.promise(map.get('counter'))).to.equal(2)
+            })
+
+            it('RedisIdPairToValue should execute all functions as expected:', async() => {
+
+                const store = new Store(redis.createClient())
+                const LANG = 'hu'
+                const ID1 = '1'
+                const ID2 = '2'
+                const TEXT1 = 'one'
+                const TEXT2 = 'two'
+                const map = new RedisIdPairToValue({key: 'id.to.text:${lang}:${id}', valueType: 'text'})
+
+                expect(await store.promise(map.exists(LANG,ID1))).to.not.be.ok
+                expect(await store.promise(map.get(LANG,ID1))).to.not.be.ok
+
+                await store.promise(map.set(LANG,ID1, TEXT1))
+                await store.promise(map.set(LANG,ID2, TEXT2))
+                expect(await store.promise(map.exists(LANG,ID1))).to.be.ok
+                expect(await store.promise(map.exists(LANG,ID2))).to.be.ok
+                expect(await store.promise(map.get(LANG,ID1))).to.equal(TEXT1)
+                expect(await store.promise(map.get(LANG,ID2))).to.equal(TEXT2)
+
+                await store.promise(map.remove(LANG,ID1))
+                expect(await store.promise(map.exists(LANG,ID1))).to.not.be.ok
+                expect(await store.promise(map.exists(LANG,ID2))).to.be.ok
+
+                await store.promise(map.remove(LANG,ID2))
+                expect(await store.promise(map.exists(LANG,ID2))).to.not.be.ok
+
+                await store.promise(map.inc(LANG,'counter'))
+                expect(await store.promise(map.get(LANG,'counter'))).to.equal(1)
+                await store.promise(map.inc(LANG,'counter'))
+                expect(await store.promise(map.get(LANG,'counter'))).to.equal(2)
             })
 
             it('RedisSortedSet should execute all functions as expected:', async() => {
