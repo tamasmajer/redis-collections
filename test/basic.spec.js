@@ -94,6 +94,13 @@ implementations.forEach(function ({name, implementation}) {
                 expect((await store.promise(idToSet.iterateList(USER2))).sort()).to.deep.equal([USER3].sort())
                 expect((await store.promise(idToSet.iterateList(USER3))).sort()).to.deep.equal([].sort())
 
+                const keys = await store.promise(idToSet.findKeys())
+                expect(keys.sort()).to.deep.equal(["likes:" + USER1, "likes:" + USER2].sort())
+                for (const key of keys) {
+                    const id = idToSet.toId(key)
+                    expect(await store.promise(idToSet.exists(id)))
+                }
+
                 await store.promise(idToSet.clear(USER1))
                 expect(await store.promise(idToSet.exists(USER1))).to.not.be.ok
                 expect(await store.promise(idToSet.exists(USER2))).to.be.ok
