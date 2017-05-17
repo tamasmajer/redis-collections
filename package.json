@@ -1,6 +1,6 @@
 {
   "name": "redis-collections",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Collection based views for Redis",
   "main": "lib/index.js",
   "scripts": {
