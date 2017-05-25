@@ -369,6 +369,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([])
                 expect(await store.promise(sortedSet.getList(true))).to.deep.equal([])
 
+                await store.promise(sortedSet.put(SCORE1, TEXT2))
                 await store.promise(sortedSet.put(SCORE2, TEXT2))
                 await store.promise(sortedSet.put(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size())).to.equal(2)
@@ -434,6 +435,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getList(NUMBERS))).to.deep.equal([])
                 expect(await store.promise(sortedSet.getList(NUMBERS, true))).to.deep.equal([])
 
+                await store.promise(sortedSet.put(NUMBERS, SCORE1, TEXT2))
                 await store.promise(sortedSet.put(NUMBERS, SCORE2, TEXT2))
                 await store.promise(sortedSet.put(NUMBERS, SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size(NUMBERS))).to.equal(2)
