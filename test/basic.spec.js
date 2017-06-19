@@ -431,6 +431,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank(TEXT2))).to.equal(1)
                 expect(await store.promise(sortedSet.getRank('x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank('y'))).to.equal(3)
+                expect(await store.promise(sortedSet.getRank('z'))).to.equal(null)
             })
 
             it('RedisIdToSortedSet should execute all functions as expected:', async() => {
@@ -509,6 +510,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank(NUMBERS, TEXT2))).to.equal(1)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'y'))).to.equal(3)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, 'z'))).to.equal(null)
             })
         })
 
