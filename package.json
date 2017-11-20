@@ -4,7 +4,7 @@
   "description": "Collection based views for Redis",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha --harmony-async-await \"test/**/basic.spec.js\""
+    "test": "node node_modules/mocha/bin/mocha \"test/**/basic.spec.js\""
   },
   "repository": {
     "type": "git",

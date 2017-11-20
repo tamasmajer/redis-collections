@@ -1,5 +1,3 @@
-'use strict'
-
 const chai = require('chai')
 const expect = chai.expect
 
@@ -11,7 +9,7 @@ const implementations = [
 ]
 
 implementations.forEach(function ({name, implementation}) {
-    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
+    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdPairToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
 
     describe(name + ":", function () {
         this.timeout(0)
@@ -326,7 +324,7 @@ implementations.forEach(function ({name, implementation}) {
             it('RedisIdPairToValue should execute all functions as expected:', async() => {
 
                 const store = new Store(redis.createClient())
-                const LANG = 'hu'
+                const LANG = 'en'
                 const ID1 = '1'
                 const ID2 = '2'
                 const TEXT1 = 'one'
@@ -511,6 +509,101 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'y'))).to.equal(3)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'z'))).to.equal(null)
+            })
+
+            it('RedisIdPairToSortedSet should execute all functions as expected:', async() => {
+
+                const store = new Store(redis.createClient())
+                const NUMBERS = 'numbers'
+                const LANG = 'en'
+                const VALUE1 = 1
+                const VALUE2 = 2
+                const TEXT1 = 'one'
+                const TEXT2 = 'two'
+                const sortedSet = new RedisIdPairToSortedSet('sorted:${groupId}:${typeId}')
+
+                expect(await store.promise(sortedSet.size(NUMBERS, LANG))).to.equal(0)
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG, true))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                expect(await store.promise(sortedSet.size(NUMBERS, LANG))).to.equal(2)
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
+                expect(await store.promise(sortedSet.getTopOne(NUMBERS, LANG))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTopOne(NUMBERS, LANG, true))).to.deep.equal([TEXT2, '2'])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, LANG, 1))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, LANG, 1, true))).to.deep.equal([TEXT2, '2'])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, LANG, 2))).to.deep.equal([TEXT2, TEXT1])
+                expect(await store.promise(sortedSet.getTop(NUMBERS, LANG, 2, true))).to.deep.equal([TEXT2, '2', TEXT1, '1'])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, LANG, 1))).to.deep.equal([TEXT1])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, LANG, 1, true))).to.deep.equal([TEXT1, '1'])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, LANG, 2))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getBottom(NUMBERS, LANG, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT1))).to.equal(0)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT2))).to.equal(1)
+                expect(await store.promise(sortedSet.getRange(NUMBERS, LANG, 0, 2))).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getRange(NUMBERS, LANG, 0, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
+
+                let keys = await store.promise(sortedSet.findKeys(NUMBERS))
+                expect(keys.sort()).to.deep.equal(["sorted:" + NUMBERS + ":" + LANG].sort())
+                for (const key of keys) {
+                    const idPair = sortedSet.toIds(key)
+                    expect(await store.promise(sortedSet.exists(...idPair)))
+                }
+
+                keys = await store.promise(sortedSet.findKeys())
+                expect(keys.sort()).to.deep.equal(["sorted:" + NUMBERS + ":" + LANG].sort())
+                for (const key of keys) {
+                    const idPair = sortedSet.toIds(key)
+                    expect(await store.promise(sortedSet.exists(...idPair)))
+                }
+
+
+                await store.promise(sortedSet.remove(NUMBERS, LANG, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT2])
+
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT1, TEXT2])
+
+                await store.promise(sortedSet.removeBelow(NUMBERS, LANG, VALUE2, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                await store.promise(sortedSet.removeBottom(NUMBERS, LANG, 2))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.removeBottom(NUMBERS, LANG, 1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT2])
+                await store.promise(sortedSet.removeBottom(NUMBERS, LANG, 0))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT1, TEXT2])
+
+                await store.promise(sortedSet.removeBelow(NUMBERS, LANG, VALUE1, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT2])
+
+                await store.promise(sortedSet.clear(NUMBERS, LANG))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, TEXT2))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT1, TEXT2])
+                await store.promise(sortedSet.inc(NUMBERS, LANG, VALUE2, TEXT1))
+                expect(await store.promise(sortedSet.getList(NUMBERS, LANG))).to.deep.equal([TEXT2, TEXT1])
+
+                await store.promise(sortedSet.clear(NUMBERS, LANG))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT1))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE1, TEXT2))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, 'x'))
+                await store.promise(sortedSet.put(NUMBERS, LANG, VALUE2, 'y'))
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT1))).to.equal(0)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT2))).to.equal(1)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'x'))).to.equal(2)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'y'))).to.equal(3)
+                expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'z'))).to.equal(null)
             })
         })
 
