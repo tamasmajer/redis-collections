@@ -308,6 +308,13 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.get(ID1))).to.equal(TEXT1)
                 expect(await store.promise(map.get(ID2))).to.equal(TEXT2)
 
+                const keys = await store.promise(map.findKeys())
+                expect(keys.sort()).to.deep.equal(["id.to.text:" + ID1,"id.to.text:" + ID2].sort())
+                for (const key of keys) {
+                    const id = map.toId(key)
+                    expect(await store.promise(map.exists(id)))
+                }
+
                 await store.promise(map.remove(ID1))
                 expect(await store.promise(map.exists(ID1))).to.not.be.ok
                 expect(await store.promise(map.exists(ID2))).to.be.ok
@@ -340,6 +347,26 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.exists(LANG, ID2))).to.be.ok
                 expect(await store.promise(map.get(LANG, ID1))).to.equal(TEXT1)
                 expect(await store.promise(map.get(LANG, ID2))).to.equal(TEXT2)
+
+                let keys = await store.promise(map.findKeys(LANG))
+                expect(keys.sort()).to.deep.equal([
+                    "id.to.text:" + LANG + ":" + ID1,
+                    "id.to.text:" + LANG + ":" + ID2
+                ].sort())
+                for (const key of keys) {
+                    const idPair = map.toIds(key)
+                    expect(await store.promise(map.exists(...idPair)))
+                }
+
+                keys = await store.promise(map.findKeys())
+                expect(keys.sort()).to.deep.equal([
+                    "id.to.text:" + LANG + ":" + ID1,
+                    "id.to.text:" + LANG + ":" + ID2
+                ].sort())
+                for (const key of keys) {
+                    const idPair = map.toIds(key)
+                    expect(await store.promise(map.exists(...idPair)))
+                }
 
                 await store.promise(map.remove(LANG, ID1))
                 expect(await store.promise(map.exists(LANG, ID1))).to.not.be.ok
