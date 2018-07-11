@@ -392,6 +392,7 @@ implementations.forEach(function ({name, implementation}) {
 
                 expect(await store.promise(sortedSet.size())).to.equal(0)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(false,2))).to.deep.equal([])
                 expect(await store.promise(sortedSet.getList(true))).to.deep.equal([])
 
                 await store.promise(sortedSet.put(SCORE1, TEXT2))
@@ -399,7 +400,11 @@ implementations.forEach(function ({name, implementation}) {
                 await store.promise(sortedSet.put(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size())).to.equal(2)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
+                expect(await store.promise(sortedSet.getList(false,2))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getList(false,1,2))).to.deep.equal([TEXT1])
                 expect(await store.promise(sortedSet.getList(true))).to.deep.equal([TEXT1, '1.1', TEXT2, '2.1'])
+                expect(await store.promise(sortedSet.getList(true,2))).to.deep.equal([TEXT2, '2.1'])
+                expect(await store.promise(sortedSet.getList(true,1,2))).to.deep.equal([TEXT1, '1.1'])
                 expect(await store.promise(sortedSet.getTopOne())).to.deep.equal([TEXT2])
                 expect(await store.promise(sortedSet.getTopOne(true))).to.deep.equal([TEXT2, '2.1'])
                 expect(await store.promise(sortedSet.getTop(1))).to.deep.equal([TEXT2])
