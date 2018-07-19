@@ -417,6 +417,8 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getBottom(2, true))).to.deep.equal([TEXT1, '1.1', TEXT2, '2.1'])
                 expect(await store.promise(sortedSet.getRank(TEXT1))).to.equal(0)
                 expect(await store.promise(sortedSet.getRank(TEXT2))).to.equal(1)
+                expect(await store.promise(sortedSet.getScore(TEXT1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(TEXT2))).to.equal(SCORE2)
                 expect(await store.promise(sortedSet.getRange(0, 2))).to.deep.equal([TEXT1, TEXT2])
                 expect(await store.promise(sortedSet.getRange(0, 2, true))).to.deep.equal([TEXT1, '1.1', TEXT2, '2.1'])
 
@@ -462,6 +464,11 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank('x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank('y'))).to.equal(3)
                 expect(await store.promise(sortedSet.getRank('z'))).to.equal(null)
+                expect(await store.promise(sortedSet.getScore(TEXT1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(TEXT2))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore('x'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore('y'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore('z'))).to.equal(null)
             })
 
             it('RedisIdToSortedSet should execute all functions as expected:', async() => {
@@ -496,6 +503,8 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getBottom(NUMBERS, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
                 expect(await store.promise(sortedSet.getRank(NUMBERS, TEXT1))).to.equal(0)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, TEXT2))).to.equal(1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, TEXT1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, TEXT2))).to.equal(SCORE2)
                 expect(await store.promise(sortedSet.getRange(NUMBERS, 0, 2))).to.deep.equal([TEXT1, TEXT2])
                 expect(await store.promise(sortedSet.getRange(NUMBERS, 0, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
 
@@ -541,6 +550,11 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'y'))).to.equal(3)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, 'z'))).to.equal(null)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, TEXT1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, TEXT2))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, 'x'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, 'y'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, 'z'))).to.equal(null)
             })
 
             it('RedisIdPairToSortedSet should execute all functions as expected:', async() => {
@@ -576,6 +590,8 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getBottom(NUMBERS, LANG, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
                 expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT1))).to.equal(0)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, TEXT2))).to.equal(1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, TEXT1))).to.equal(VALUE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, TEXT2))).to.equal(VALUE2)
                 expect(await store.promise(sortedSet.getRange(NUMBERS, LANG, 0, 2))).to.deep.equal([TEXT1, TEXT2])
                 expect(await store.promise(sortedSet.getRange(NUMBERS, LANG, 0, 2, true))).to.deep.equal([TEXT1, '1', TEXT2, '2'])
 
@@ -636,6 +652,11 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'x'))).to.equal(2)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'y'))).to.equal(3)
                 expect(await store.promise(sortedSet.getRank(NUMBERS, LANG, 'z'))).to.equal(null)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, TEXT1))).to.equal(VALUE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, TEXT2))).to.equal(VALUE1)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, 'x'))).to.equal(VALUE2)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, 'y'))).to.equal(VALUE2)
+                expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, 'z'))).to.equal(null)
             })
         })
 
