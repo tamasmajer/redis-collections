@@ -555,6 +555,14 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getScore(NUMBERS, 'x'))).to.equal(SCORE2)
                 expect(await store.promise(sortedSet.getScore(NUMBERS, 'y'))).to.equal(SCORE2)
                 expect(await store.promise(sortedSet.getScore(NUMBERS, 'z'))).to.equal(null)
+
+                const keys = await store.promise(sortedSet.findKeys())
+                expect(keys.sort()).to.deep.equal(["sorted:" + NUMBERS].sort())
+                for (const key of keys) {
+                    const idPair = sortedSet.toIds(key)
+                    expect(await store.promise(sortedSet.exists(...idPair)))
+                }
+
             })
 
             it('RedisIdPairToSortedSet should execute all functions as expected:', async() => {
