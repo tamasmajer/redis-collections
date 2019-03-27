@@ -8,6 +8,7 @@ module.exports = {
     RedisIdPairToValue: require('./lib/collection/RedisIdPairToValue'),
     RedisMap: require('./lib/collection/RedisMap'),
     RedisSet: require('./lib/collection/RedisSet'),
+    RedisList: require('./lib/collection/RedisList'),
     RedisSortedSet: require('./lib/collection/RedisSortedSet'),
     Store: require('./lib/Store'),
     Mock: {
@@ -20,6 +21,7 @@ module.exports = {
         RedisIdPairToValue: require('./lib/mock/MockIdPairToValue'),
         RedisMap: require('./lib/mock/MockMap'),
         RedisSet: require('./lib/mock/MockSet'),
+        RedisList: require('./lib/mock/MockList'),
         RedisSortedSet: require('./lib/mock/MockSortedSet'),
         Store: require('./lib/mock/MockStore'),
     }

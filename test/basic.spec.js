@@ -9,12 +9,64 @@ const implementations = [
 ]
 
 implementations.forEach(function ({name, implementation}) {
-    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdPairToSortedSet, RedisIdToMap, RedisIdPairToMap} = implementation
+    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdPairToSortedSet, RedisIdToMap, RedisIdPairToMap, RedisList} = implementation
 
     describe(name + ":", function () {
         this.timeout(0)
 
         describe('collections:', () => {
+
+            it('RedisList should execute all functions as expected:', async() => {
+                // if(!RedisList) return
+
+                const store = new Store(redis.createClient())
+                const VALUE1 = 'one'
+                const VALUE2 = 'two'
+                const VALUE3 = 'three'
+                const list = new RedisList('numbers')
+
+
+                expect(await store.promise(list.exists())).to.not.be.ok
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+                expect(await store.promise(list.getLength())).to.equal(0)
+                expect(await store.promise(list.getLeft())).to.deep.equal([])
+                expect(await store.promise(list.getRight())).to.deep.equal([])
+                expect(await store.promise(list.get(0))).to.equal(null)
+                expect(await store.promise(list.popLeft())).to.equal(null)
+                expect(await store.promise(list.popRight())).to.equal(null)
+
+
+                await store.promise(list.pushLeft(VALUE1))
+                await store.promise(list.pushLeft(VALUE2,VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE3,VALUE2,VALUE1])
+                await store.promise(list.set(0,VALUE1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE2,VALUE1])
+                await store.promise(list.keep(0,1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE2])
+                await store.promise(list.trimRight(1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1])
+                await store.promise(list.trimLeft(1))
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+
+                await store.promise(list.pushRight(VALUE1,VALUE1,VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE1,VALUE3])
+                await store.promise(list.removeAll(VALUE1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE3])
+                await store.promise(list.removeLast(VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+                await store.promise(list.set(2,VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+                await store.promise(list.set(0,VALUE1))
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+                await store.promise(list.pushLeft(VALUE1))
+                await store.promise(list.set(0,VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE3])
+                expect(await store.promise(list.exists())).to.be.ok
+                expect(await store.promise(list.getLength())).to.equal(1)
+                await store.promise(list.clear())
+                expect(await store.promise(list.getAll())).to.deep.equal([])
+                expect(await store.promise(list.exists())).to.not.be.ok
+            })
 
             it('RedisSet should execute all functions as expected:', async() => {
 
