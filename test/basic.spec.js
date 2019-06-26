@@ -9,14 +9,14 @@ const implementations = [
 ]
 
 implementations.forEach(function ({name, implementation}) {
-    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdPairToSortedSet, RedisIdToMap, RedisIdPairToMap, RedisList} = implementation
+    const {Store, RedisSet, RedisSortedSet, RedisMap, RedisIdToValue, RedisIdPairToValue, RedisIdToSet, RedisIdToSortedSet, RedisIdPairToSortedSet, RedisIdsToSortedSet, RedisIdToMap, RedisIdPairToMap, RedisList} = implementation
 
     describe(name + ":", function () {
         this.timeout(0)
 
         describe('collections:', () => {
 
-            it('RedisList should execute all functions as expected:', async() => {
+            it('RedisList should execute all functions as expected:', async () => {
                 // if(!RedisList) return
 
                 const store = new Store(redis.createClient())
@@ -37,29 +37,29 @@ implementations.forEach(function ({name, implementation}) {
 
 
                 await store.promise(list.pushLeft(VALUE1))
-                await store.promise(list.pushLeft(VALUE2,VALUE3))
-                expect(await store.promise(list.getAll())).to.deep.equal([VALUE3,VALUE2,VALUE1])
-                await store.promise(list.set(0,VALUE1))
-                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE2,VALUE1])
-                await store.promise(list.keep(0,1))
-                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE2])
+                await store.promise(list.pushLeft(VALUE2, VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE3, VALUE2, VALUE1])
+                await store.promise(list.set(0, VALUE1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1, VALUE2, VALUE1])
+                await store.promise(list.keep(0, 1))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1, VALUE2])
                 await store.promise(list.trimRight(1))
                 expect(await store.promise(list.getAll())).to.deep.equal([VALUE1])
                 await store.promise(list.trimLeft(1))
                 expect(await store.promise(list.getAll())).to.deep.equal([])
 
-                await store.promise(list.pushRight(VALUE1,VALUE1,VALUE3))
-                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1,VALUE1,VALUE3])
+                await store.promise(list.pushRight(VALUE1, VALUE1, VALUE3))
+                expect(await store.promise(list.getAll())).to.deep.equal([VALUE1, VALUE1, VALUE3])
                 await store.promise(list.removeAll(VALUE1))
                 expect(await store.promise(list.getAll())).to.deep.equal([VALUE3])
                 await store.promise(list.removeLast(VALUE3))
                 expect(await store.promise(list.getAll())).to.deep.equal([])
-                await store.promise(list.set(2,VALUE3))
+                await store.promise(list.set(2, VALUE3))
                 expect(await store.promise(list.getAll())).to.deep.equal([])
-                await store.promise(list.set(0,VALUE1))
+                await store.promise(list.set(0, VALUE1))
                 expect(await store.promise(list.getAll())).to.deep.equal([])
                 await store.promise(list.pushLeft(VALUE1))
-                await store.promise(list.set(0,VALUE3))
+                await store.promise(list.set(0, VALUE3))
                 expect(await store.promise(list.getAll())).to.deep.equal([VALUE3])
                 expect(await store.promise(list.exists())).to.be.ok
                 expect(await store.promise(list.getLength())).to.equal(1)
@@ -68,7 +68,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(list.exists())).to.not.be.ok
             })
 
-            it('RedisSet should execute all functions as expected:', async() => {
+            it('RedisSet should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const VALUE1 = 'one'
@@ -110,7 +110,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(set.contains(VALUE2))).to.not.be.ok
             })
 
-            it('RedisIdToSet should execute all functions as expected:', async() => {
+            it('RedisIdToSet should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const USER1 = 'one'
@@ -174,7 +174,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(idToSet.contains(USER1, USER3))).to.not.be.ok
             })
 
-            it('RedisMap should execute all functions as expected:', async() => {
+            it('RedisMap should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const FIELD1 = '1'
@@ -222,7 +222,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.has(FIELD2))).to.not.be.ok
             })
 
-            it('RedisIdToMap should execute all functions as expected:', async() => {
+            it('RedisIdToMap should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const EN_LANG_ID = 'en'
@@ -277,7 +277,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(idToMap.has(EN_LANG_ID, EN_FIELD2))).to.not.be.ok
             })
 
-            it('RedisIdPairToMap should execute all functions as expected:', async() => {
+            it('RedisIdPairToMap should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const EN_LANG_ID = 'en'
@@ -341,7 +341,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(idToMap.has(EN_LANG_ID, NUMBERS_TOPIC_ID, EN_FIELD2))).to.not.be.ok
             })
 
-            it('RedisIdToValue should execute all functions as expected:', async() => {
+            it('RedisIdToValue should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const ID1 = '1'
@@ -361,7 +361,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.get(ID2))).to.equal(TEXT2)
 
                 const keys = await store.promise(map.findKeys())
-                expect(keys.sort()).to.deep.equal(["id.to.text:" + ID1,"id.to.text:" + ID2].sort())
+                expect(keys.sort()).to.deep.equal(["id.to.text:" + ID1, "id.to.text:" + ID2].sort())
                 for (const key of keys) {
                     const id = map.toId(key)
                     expect(await store.promise(map.exists(id)))
@@ -380,7 +380,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.get('counter'))).to.equal(2)
             })
 
-            it('RedisIdPairToValue should execute all functions as expected:', async() => {
+            it('RedisIdPairToValue should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const LANG = 'en'
@@ -433,7 +433,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(map.get(LANG, 'counter'))).to.equal(2)
             })
 
-            it('RedisSortedSet should execute all functions as expected:', async() => {
+            it('RedisSortedSet should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const SCORE1 = 1.1
@@ -444,7 +444,7 @@ implementations.forEach(function ({name, implementation}) {
 
                 expect(await store.promise(sortedSet.size())).to.equal(0)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([])
-                expect(await store.promise(sortedSet.getList(false,2))).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(false, 2))).to.deep.equal([])
                 expect(await store.promise(sortedSet.getList(true))).to.deep.equal([])
 
                 await store.promise(sortedSet.put(SCORE1, TEXT2))
@@ -452,11 +452,11 @@ implementations.forEach(function ({name, implementation}) {
                 await store.promise(sortedSet.put(SCORE1, TEXT1))
                 expect(await store.promise(sortedSet.size())).to.equal(2)
                 expect(await store.promise(sortedSet.getList())).to.deep.equal([TEXT1, TEXT2])
-                expect(await store.promise(sortedSet.getList(false,2))).to.deep.equal([TEXT2])
-                expect(await store.promise(sortedSet.getList(false,1,2))).to.deep.equal([TEXT1])
+                expect(await store.promise(sortedSet.getList(false, 2))).to.deep.equal([TEXT2])
+                expect(await store.promise(sortedSet.getList(false, 1, 2))).to.deep.equal([TEXT1])
                 expect(await store.promise(sortedSet.getList(true))).to.deep.equal([TEXT1, '1.1', TEXT2, '2.1'])
-                expect(await store.promise(sortedSet.getList(true,2))).to.deep.equal([TEXT2, '2.1'])
-                expect(await store.promise(sortedSet.getList(true,1,2))).to.deep.equal([TEXT1, '1.1'])
+                expect(await store.promise(sortedSet.getList(true, 2))).to.deep.equal([TEXT2, '2.1'])
+                expect(await store.promise(sortedSet.getList(true, 1, 2))).to.deep.equal([TEXT1, '1.1'])
                 expect(await store.promise(sortedSet.getTopOne())).to.deep.equal([TEXT2])
                 expect(await store.promise(sortedSet.getTopOne(true))).to.deep.equal([TEXT2, '2.1'])
                 expect(await store.promise(sortedSet.getTop(1))).to.deep.equal([TEXT2])
@@ -523,7 +523,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getScore('z'))).to.equal(null)
             })
 
-            it('RedisIdToSortedSet should execute all functions as expected:', async() => {
+            it('RedisIdToSortedSet should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const NUMBERS = 'numbers'
@@ -617,7 +617,7 @@ implementations.forEach(function ({name, implementation}) {
 
             })
 
-            it('RedisIdPairToSortedSet should execute all functions as expected:', async() => {
+            it('RedisIdPairToSortedSet should execute all functions as expected:', async () => {
 
                 const store = new Store(redis.createClient())
                 const NUMBERS = 'numbers'
@@ -718,11 +718,114 @@ implementations.forEach(function ({name, implementation}) {
                 expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, 'y'))).to.equal(VALUE2)
                 expect(await store.promise(sortedSet.getScore(NUMBERS, LANG, 'z'))).to.equal(null)
             })
+
+            it('RedisIdsToSortedSet should execute all functions as expected:', async () => {
+
+                const store = new Store(redis.createClient())
+                // const NUMBERS = 'numbers'
+                // const LANG = 'en'
+                const ids = ["A", "B", "C"]
+                const SCORE1 = 1
+                const SCORE2 = 2
+                const VALUE1 = 'one'
+                const VALUE2 = 'two'
+                const sortedSet = new RedisIdsToSortedSet('sorted:${id1}:${id2}:${id3}')
+
+                expect(await store.promise(sortedSet.size(ids))).to.equal(0)
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([])
+                expect(await store.promise(sortedSet.getList(ids, true))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(ids,SCORE1,VALUE2))
+                await store.promise(sortedSet.put(ids,SCORE2,VALUE2))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                expect(await store.promise(sortedSet.size(ids))).to.equal(2)
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE1, VALUE2])
+                expect(await store.promise(sortedSet.getList(ids, true))).to.deep.equal([VALUE1, '1', VALUE2, '2'])
+                expect(await store.promise(sortedSet.getTopOne(ids))).to.deep.equal([VALUE2])
+                expect(await store.promise(sortedSet.getTopOne(ids, true))).to.deep.equal([VALUE2, '2'])
+                expect(await store.promise(sortedSet.getTop(ids, 1))).to.deep.equal([VALUE2])
+                expect(await store.promise(sortedSet.getTop(ids, 1, true))).to.deep.equal([VALUE2, '2'])
+                expect(await store.promise(sortedSet.getTop(ids, 2))).to.deep.equal([VALUE2, VALUE1])
+                expect(await store.promise(sortedSet.getTop(ids, 2, true))).to.deep.equal([VALUE2, '2', VALUE1, '1'])
+                expect(await store.promise(sortedSet.getBottom(ids, 1))).to.deep.equal([VALUE1])
+                expect(await store.promise(sortedSet.getBottom(ids, 1, true))).to.deep.equal([VALUE1, '1'])
+                expect(await store.promise(sortedSet.getBottom(ids, 2))).to.deep.equal([VALUE1, VALUE2])
+                expect(await store.promise(sortedSet.getBottom(ids, 2, true))).to.deep.equal([VALUE1, '1', VALUE2, '2'])
+                expect(await store.promise(sortedSet.getRank(ids, VALUE1))).to.equal(0)
+                expect(await store.promise(sortedSet.getRank(ids, VALUE2))).to.equal(1)
+                expect(await store.promise(sortedSet.getScore(ids, VALUE1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(ids, VALUE2))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getRange(ids, 0, 2))).to.deep.equal([VALUE1, VALUE2])
+                expect(await store.promise(sortedSet.getRange(ids, 0, 2, true))).to.deep.equal([VALUE1, '1', VALUE2, '2'])
+
+                let keys = await store.promise(sortedSet.findKeys("A"))
+                expect(keys.sort()).to.deep.equal(["sorted:A:B:C"].sort())
+                for (const key of keys) {
+                    const idList = sortedSet.toIds(key)
+                    expect(await store.promise(sortedSet.exists(idList)))
+                }
+
+                keys = await store.promise(sortedSet.findKeys())
+                expect(keys.sort()).to.deep.equal(["sorted:A:B:C"].sort())
+                for (const key of keys) {
+                    const idList = sortedSet.toIds(key)
+                    expect(await store.promise(sortedSet.exists(idList)))
+                }
+
+
+                await store.promise(sortedSet.remove(ids, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE2])
+
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE1, VALUE2])
+
+                await store.promise(sortedSet.removeBelow(ids, SCORE2, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(ids, SCORE2, VALUE2))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                await store.promise(sortedSet.removeBottom(ids, 2))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE1, VALUE2])
+                await store.promise(sortedSet.removeBottom(ids, 1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE2])
+                await store.promise(sortedSet.removeBottom(ids, 0))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([])
+
+                await store.promise(sortedSet.put(ids, SCORE2, VALUE2))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE1, VALUE2])
+
+                await store.promise(sortedSet.removeBelow(ids, SCORE1, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE2])
+
+                await store.promise(sortedSet.clear(ids))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                await store.promise(sortedSet.put(ids, SCORE2, VALUE2))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE1, VALUE2])
+                await store.promise(sortedSet.inc(ids, SCORE2, VALUE1))
+                expect(await store.promise(sortedSet.getList(ids))).to.deep.equal([VALUE2, VALUE1])
+
+                await store.promise(sortedSet.clear(ids))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE1))
+                await store.promise(sortedSet.put(ids, SCORE1, VALUE2))
+                await store.promise(sortedSet.put(ids, SCORE2, 'x'))
+                await store.promise(sortedSet.put(ids, SCORE2, 'y'))
+                expect(await store.promise(sortedSet.getRank(ids, VALUE1))).to.equal(0)
+                expect(await store.promise(sortedSet.getRank(ids, VALUE2))).to.equal(1)
+                expect(await store.promise(sortedSet.getRank(ids, 'x'))).to.equal(2)
+                expect(await store.promise(sortedSet.getRank(ids, 'y'))).to.equal(3)
+                expect(await store.promise(sortedSet.getRank(ids, 'z'))).to.equal(null)
+                expect(await store.promise(sortedSet.getScore(ids, VALUE1))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(ids, VALUE2))).to.equal(SCORE1)
+                expect(await store.promise(sortedSet.getScore(ids, 'x'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore(ids, 'y'))).to.equal(SCORE2)
+                expect(await store.promise(sortedSet.getScore(ids, 'z'))).to.equal(null)
+            })
         })
 
         describe('multiple commands:', () => {
 
-            it('save multiple', async() => {
+            it('save multiple', async () => {
                 const store = new Store(redis.createClient())
                 const numbers = new RedisSet('numbers')
 
@@ -735,7 +838,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(all.sort()).to.deep.equal(['one', 'two'].sort())
             })
 
-            it('load multiple', async() => {
+            it('load multiple', async () => {
                 const store = new Store(redis.createClient())
                 const numbers = new RedisSet('numbers')
 
@@ -750,7 +853,7 @@ implementations.forEach(function ({name, implementation}) {
                 expect(result).to.deep.equal([1, 1, 0])
             })
 
-            it('load into map', async() => {
+            it('load into map', async () => {
                 const store = new Store(redis.createClient())
                 const numbers = new RedisSet('numbers')
 
@@ -769,7 +872,7 @@ implementations.forEach(function ({name, implementation}) {
                 })
             })
 
-            it('load into structure', async() => {
+            it('load into structure', async () => {
                 const store = new Store(redis.createClient())
                 const numbers = new RedisSet('numbers')
 
@@ -807,7 +910,7 @@ implementations.forEach(function ({name, implementation}) {
                 friends: new RedisIdToSet('user:${userId}:friends')
             }
 
-            before(async() => {
+            before(async () => {
                 const createUsers = [
                     users.list.addAll(["U1", "U2"]),
                     users.settings.setAll("U1", {name: "USER1"}),
@@ -818,7 +921,7 @@ implementations.forEach(function ({name, implementation}) {
                 await store.promise(createUsers)
             })
 
-            it('create a combined list', async() => {
+            it('create a combined list', async () => {
                 const userIds = await store.promise(users.list.getList())
                 const loadList = userIds.map(userId => ({
                     id: userId,
@@ -840,7 +943,7 @@ implementations.forEach(function ({name, implementation}) {
                     }
                 ])
             })
-            it('create a combined map', async() => {
+            it('create a combined map', async () => {
                 const userIds = await store.promise(users.list.getList())
                 const loadMap = {}
                 userIds.forEach(userId => {
